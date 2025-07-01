@@ -1,0 +1,24 @@
+.{
+    .name = .napi_z,
+    .version = "0.1.0",
+    .fingerprint = 0x86a418feef5ba28a,
+    .minimum_zig_version = "0.14.1",
+    .dependencies = .{},
+    .paths = .{ "build.zig", "build.zig.zon", "src", "include" },
+    .modules = .{
+        .napi = .{
+            .root_source_file = "src/root.zig",
+            .include_paths = .{"include"},
+        },
+    },
+    .libraries = .{
+        .example = .{
+            .root_module = .{
+                .root_source_file = "example/mod.zig",
+                .imports = .{.napi},
+            },
+            .linkage = .dynamic,
+            .dest_sub_path = "example.node",
+        },
+    },
+}

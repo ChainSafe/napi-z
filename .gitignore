@@ -1,0 +1,6 @@
+.zig-cache/
+zig-out/
+test/spec/spec_tests
+test/spec/generic_tests.zig
+test/spec/static_tests.zig
+*.ssz
