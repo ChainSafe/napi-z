@@ -34,6 +34,11 @@ pub fn createCallback(
                 const arg_hint = comptime getArgsHint(options, i);
                 if (arg_hint == .data) {
                     args[i] = info.data;
+                } else if (arg_hint == .env) {
+                    args[i] = env;
+                } else if (arg_hint == .value) {
+                    args[i] = info.arg(cb_arg_i);
+                    cb_arg_i += 1;
                 } else {
                     args[i] = fromValue(fn_info.params[i].type.?, info.arg(cb_arg_i), arg_hint) catch |err| {
                         env.throwError(@errorName(err), "Failed to get argument at index " ++ std.fmt.comptimePrint("{d}", .{i})) catch {};
@@ -44,6 +49,9 @@ pub fn createCallback(
             }
             const result = @call(.auto, func, args);
             const returns_hint = comptime getReturnsHint(options);
+            if (returns_hint == .value) {
+                return result;
+            }
             return toValue(fn_info.return_type.?, result, env, returns_hint) catch |err| {
                 env.throwError(@errorName(err), "Failed to convert return value") catch {};
                 return Value.nullptr;
@@ -54,15 +62,27 @@ pub fn createCallback(
 
 pub const ArgHint = enum {
     auto,
-    data,
+
     buffer,
     string,
+
+    /// userdata pointer, usually a struct
+    data,
+
+    /// napi.Env
+    env,
+
+    /// napi.Value
+    value,
 };
 
 pub const ReturnsHint = enum {
     auto,
     buffer,
     string,
+
+    /// napi.Value
+    value,
 };
 
 pub fn getArgsHint(

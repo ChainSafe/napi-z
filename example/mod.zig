@@ -29,6 +29,16 @@ fn exampleMod(env: napi.Env, module: napi.Value) anyerror!void {
         napi.createCallback(void, add, .{}),
         @constCast(&{}),
     ));
+    try module.setNamedProperty("add_semimanual", try env.createFunction(
+        "add_semimanual",
+        2,
+        void,
+        napi.createCallback(void, add_semimanual, .{
+            .args = .{ .env, .auto, .value },
+            .returns = .value,
+        }),
+        @constCast(&{}),
+    ));
     try module.setNamedProperty("surprise", try env.createFunction(
         "surprise",
         0,
@@ -47,6 +57,20 @@ fn exampleMod(env: napi.Env, module: napi.Value) anyerror!void {
         }),
         &s,
     ));
+}
+
+/// Example function that shows Env, Value param and Value return type.
+fn add_semimanual(env: napi.Env, a: i32, b: napi.Value) napi.Value {
+    const b_int = b.getValueInt32() catch |err| {
+        env.throwError(@errorName(err), "Failed to get value of b") catch {};
+        return napi.Value.nullptr;
+    };
+
+    const result = a + b_int;
+    return env.createInt32(result) catch |err| {
+        env.throwError(@errorName(err), "Failed to create result value") catch {};
+        return napi.Value.nullptr;
+    };
 }
 
 const S = struct {
@@ -80,14 +104,10 @@ fn add_manual(env: napi.Env, cb: napi.CallbackInfo(void)) napi.Value {
         return napi.Value.nullptr;
     };
 
-    std.debug.print("d\n", .{});
-
     const b = cb.arg(1).getValueInt32() catch |err| {
         env.throwError(@errorName(err), "MsgC") catch {};
         return napi.Value.nullptr;
     };
-
-    std.debug.print("e\n", .{});
 
     const result = @intFromBool(a) + b; // add(a, b);
     return env.createInt32(result) catch |err| {
