@@ -13,6 +13,7 @@ pub const status = @import("status.zig");
 pub const module = @import("module.zig");
 pub const CallbackInfo = @import("callback_info.zig").CallbackInfo;
 pub const Callback = @import("callback.zig").Callback;
+pub const value_types = @import("value_types.zig");
 
 pub const createCallback = @import("create_callback.zig").createCallback;
 pub const registerDecls = @import("register_decls.zig").registerDecls;
