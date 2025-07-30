@@ -207,10 +207,10 @@ pub fn createArrayWithLength(self: Env, length: usize) NapiError!Value {
 }
 
 /// https://nodejs.org/api/n-api.html#napi_create_arraybuffer
-pub fn createArrayBuffer(self: Env, size: usize, out: ?[*]u8) NapiError!Value {
+pub fn createArrayBuffer(self: Env, size: usize, out: ?*[*]u8) NapiError!Value {
     var value: c.napi_value = undefined;
     try status.check(
-        c.napi_create_arraybuffer(self.env, size, @alignCast(@ptrCast(out)), &value),
+        c.napi_create_arraybuffer(self.env, size, @ptrCast(out), &value),
     );
     return Value{
         .env = self.env,
@@ -219,10 +219,10 @@ pub fn createArrayBuffer(self: Env, size: usize, out: ?[*]u8) NapiError!Value {
 }
 
 /// https://nodejs.org/api/n-api.html#napi_create_buffer
-pub fn createBuffer(self: Env, size: usize, out: ?[*]u8) NapiError!Value {
+pub fn createBuffer(self: Env, size: usize, out: ?*[*]u8) NapiError!Value {
     var value: c.napi_value = undefined;
     try status.check(
-        c.napi_create_buffer(self.env, size, @alignCast(@ptrCast(out)), &value),
+        c.napi_create_buffer(self.env, size, @ptrCast(out), &value),
     );
     return Value{
         .env = self.env,
@@ -231,10 +231,10 @@ pub fn createBuffer(self: Env, size: usize, out: ?[*]u8) NapiError!Value {
 }
 
 /// https://nodejs.org/api/n-api.html#napi_create_buffer_copy
-pub fn createBufferCopy(self: Env, data: []const u8, out: ?[*]u8) NapiError!Value {
+pub fn createBufferCopy(self: Env, data: []const u8, out: ?*[*]u8) NapiError!Value {
     var value: c.napi_value = undefined;
     try status.check(
-        c.napi_create_buffer_copy(self.env, data.len, data.ptr, @alignCast(@ptrCast(out)), &value),
+        c.napi_create_buffer_copy(self.env, data.len, data.ptr, @ptrCast(out), &value),
     );
     return Value{
         .env = self.env,
