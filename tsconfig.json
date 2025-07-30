@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true,
+    "pretty": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+  },
+  "include": [
+    "ts"
+  ],
+}
