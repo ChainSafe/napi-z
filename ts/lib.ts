@@ -1,6 +1,9 @@
-import { existsSync, promises as fs, readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { parsePkgJson, Target } from "./config.js";
 import { join } from "node:path";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
 
 // from napi-rs
 const isMusl = () => {
