@@ -7,7 +7,6 @@ pub fn fromValue(
     value: Value,
     comptime hint: anytype,
 ) !T {
-    _ = hint;
     const type_info = @typeInfo(T);
     switch (type_info) {
         .bool => {
@@ -35,6 +34,14 @@ pub fn fromValue(
             } else {
                 return @floatCast(try value.getValueDouble());
             }
+        },
+        .pointer => |p| {
+            if (p.child == u8 and p.size == .slice) {
+                if (hint == .buffer) {
+                    return try value.getBufferInfo();
+                }
+            }
+            return error.GenericFailure; // Unsupported pointer type
         },
         else => {
             return error.GenericFailure; // Unsupported type
